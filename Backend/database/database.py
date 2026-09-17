@@ -1,11 +1,16 @@
+import os
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
-# URL para SQL Server con pyodbc
+# Configuración de base de datos (con soporte para variables de entorno)
+DB_SERVER = os.getenv("DB_SERVER", "Wender")
+DB_NAME = os.getenv("DB_NAME", "Tambo")
+DB_DRIVER = os.getenv("DB_DRIVER", "ODBC Driver 18 for SQL Server")
+
 DATABASE_URL = (
-    "mssql+pyodbc://Wender/Tambo"
-    "?driver=ODBC+Driver+18+for+SQL+Server"
+    f"mssql+pyodbc://{DB_SERVER}/{DB_NAME}"
+    f"?driver={DB_DRIVER.replace(' ', '+')}"
     "&trusted_connection=yes"
     "&TrustServerCertificate=yes"
 )

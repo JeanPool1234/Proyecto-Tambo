@@ -12,14 +12,13 @@ import {
 } from "react-bootstrap";
 import { BsPencilFill } from "react-icons/bs"; // Para el icono de edición
 import { useLocation } from "react-router-dom";
-import LogoComponent from "./components/Header/Logo"; // Asegúrate de que esta ruta sea correcta
+import LogoComponent from "./components/Header/Navegacion/Logo"; // Asegúrate de que esta ruta sea correcta
 import UbicacionSelectorContent from "./components/UbicacionSelectorContent"; // ¡Importa el nuevo componente de contenido!
 // import OrderConfirmationModal from "./components/OrderConfirmationModal"; // ¡Eliminado: Importación del modal de confirmación!
 import { createOrder } from "./pedidoService"; // ¡IMPORTACIÓN CLAVE AQUÍ!
 import Image from "react-bootstrap/Image"; // Mantener la importación original de Image de react-bootstrap
 // Importamos Image de react-bootstrap con un alias para evitar conflictos con el constructor global Image
-// import { Image as BootstrapImage } from "react-bootstrap"; 
-
+// import { Image as BootstrapImage } from "react-bootstrap";
 
 // Simula la obtención de datos del usuario y del carrito
 interface UserInfo {
@@ -52,24 +51,31 @@ const PedidoPage: React.FC = () => {
   );
 
   // ESTADOS PARA PAGO Y FACTURACIÓN
-  const [paymentMethod, setPaymentMethod] = useState<string>('yape'); // 'card', 'mobile', 'yape'
-  const [billingOption, setBillingOption] = useState<'boleta' | 'factura'>('boleta'); // 'boleta', 'factura'
-  const [documentType, setDocumentType] = useState<string>('');
-  const [documentNumber, setDocumentNumber] = useState<string>('');
-  const [billingAddress, setBillingAddress] = useState<string>('');
-  const [razonSocial, setRazonSocial] = useState<string>('');
-
+  const [paymentMethod, setPaymentMethod] = useState<string>("yape"); // 'card', 'mobile', 'yape'
+  const [billingOption, setBillingOption] = useState<"boleta" | "factura">(
+    "boleta"
+  ); // 'boleta', 'factura'
+  const [documentType, setDocumentType] = useState<string>("");
+  const [documentNumber, setDocumentNumber] = useState<string>("");
+  const [billingAddress, setBillingAddress] = useState<string>("");
+  const [razonSocial, setRazonSocial] = useState<string>("");
 
   const location = useLocation();
 
   useEffect(() => {
     // Lee el usuarioId del estado de navegación
     const navigatedUserId = location.state?.usuarioId;
-    console.log("Usuario ID recibido del estado de navegación:", navigatedUserId);
+    console.log(
+      "Usuario ID recibido del estado de navegación:",
+      navigatedUserId
+    );
 
     // Determina el ID de usuario final: si viene de navegación, úsalo; si no, usa 1 por defecto.
     // Asegúrate de que el ID 1 exista en tu tabla de Usuarios para evitar errores de clave foránea.
-    const finalUserId = navigatedUserId !== undefined && navigatedUserId !== null ? navigatedUserId : 1;
+    const finalUserId =
+      navigatedUserId !== undefined && navigatedUserId !== null
+        ? navigatedUserId
+        : 1;
 
     setUserInfo({
       id: finalUserId,
@@ -78,26 +84,39 @@ const PedidoPage: React.FC = () => {
     });
 
     if (location.state && location.state.cartItems) {
-      console.log("Datos brutos de cartItems desde location.state:", location.state.cartItems);
+      console.log(
+        "Datos brutos de cartItems desde location.state:",
+        location.state.cartItems
+      );
 
       // Mapea los cartItems a la estructura esperada por PedidoItem
-      const mappedPedidoItems: PedidoItem[] = location.state.cartItems.map((cartItem: any) => {
-        // Asegura que 'nombre' siempre sea una cadena. Si cartItem.nombre es undefined/null, usa un fallback.
-        const productName = typeof cartItem.nombre === 'string' && cartItem.nombre.trim() !== ''
-          ? cartItem.nombre
-          : `Producto ID ${cartItem.producto_id || 'Desconocido'} (Nombre No Disponible)`;
+      const mappedPedidoItems: PedidoItem[] = location.state.cartItems.map(
+        (cartItem: any) => {
+          // Asegura que 'nombre' siempre sea una cadena. Si cartItem.nombre es undefined/null, usa un fallback.
+          const productName =
+            typeof cartItem.nombre === "string" && cartItem.nombre.trim() !== ""
+              ? cartItem.nombre
+              : `Producto ID ${
+                  cartItem.producto_id || "Desconocido"
+                } (Nombre No Disponible)`;
 
-        return {
-          id: cartItem.producto_id, // Asume que 'producto_id' es el ID del producto real
-          nombre: productName,
-          precio: cartItem.precio_descuento || cartItem.precio, // Usa precio_descuento si existe, sino precio
-          cantidad: cartItem.cantidad,
-          imagen_url: cartItem.imagen_url || "https://placehold.co/50x50/cccccc/ffffff?text=NoImg", // Proporciona una imagen por defecto
-          precio_original: cartItem.precio || undefined // Asume que 'precio' es el original, o undefined
-        };
-      });
+          return {
+            id: cartItem.producto_id, // Asume que 'producto_id' es el ID del producto real
+            nombre: productName,
+            precio: cartItem.precio_descuento || cartItem.precio, // Usa precio_descuento si existe, sino precio
+            cantidad: cartItem.cantidad,
+            imagen_url:
+              cartItem.imagen_url ||
+              "https://placehold.co/50x50/cccccc/ffffff?text=NoImg", // Proporciona una imagen por defecto
+            precio_original: cartItem.precio || undefined, // Asume que 'precio' es el original, o undefined
+          };
+        }
+      );
       setPedidoItems(mappedPedidoItems);
-      console.log("PedidoItems cargados y mapeados para el envío:", mappedPedidoItems);
+      console.log(
+        "PedidoItems cargados y mapeados para el envío:",
+        mappedPedidoItems
+      );
     } else {
       console.warn(
         "No se encontraron ítems del carrito en el estado de navegación. Considera cargar el carrito desde la API si el usuario llega directamente a esta página."
@@ -107,20 +126,22 @@ const PedidoPage: React.FC = () => {
       setPedidoItems([
         {
           id: 101,
-          nombre: "Vapeador Electronico Geekbar Meloso Mini Blueberry Ice 1500 Puff 1 und",
-          precio: 32.00,
+          nombre:
+            "Vapeador Electronico Geekbar Meloso Mini Blueberry Ice 1500 Puff 1 und",
+          precio: 32.0,
           cantidad: 1,
           imagen_url: "https://placehold.co/50x50/aabbcc/ffffff?text=Vape",
-          precio_original: 35.00
+          precio_original: 35.0,
         },
         {
           id: 102,
-          nombre: "Vapeador Electronico Geekbar Meloso Mini Peach Berry 1500 Puff 1 und",
-          precio: 24.90,
+          nombre:
+            "Vapeador Electronico Geekbar Meloso Mini Peach Berry 1500 Puff 1 und",
+          precio: 24.9,
           cantidad: 2,
           imagen_url: "https://placehold.co/50x50/ccbbaa/ffffff?text=Vape",
-          precio_original: 28.00
-        }
+          precio_original: 28.0,
+        },
       ]);
     }
 
@@ -156,78 +177,85 @@ const PedidoPage: React.FC = () => {
     console.log("Estado actual de pedidoItems ANTES DE ENVIAR:", pedidoItems); // Log adicional
 
     // Validaciones básicas antes de enviar
-    if (!selectedLocationText || selectedLocationText === DEFAULT_LOCATION_TEXT) {
+    if (
+      !selectedLocationText ||
+      selectedLocationText === DEFAULT_LOCATION_TEXT
+    ) {
       alert("Por favor, selecciona una dirección o local para continuar.");
       return;
     }
     if (pedidoItems.length === 0) {
-        alert("Tu carrito está vacío. No se puede procesar el pedido.");
+      alert("Tu carrito está vacío. No se puede procesar el pedido.");
+      return;
+    }
+    if (billingOption === "factura") {
+      if (!billingAddress || !documentNumber || !razonSocial) {
+        alert(
+          "Por favor, completa todos los campos de facturación para la factura."
+        );
         return;
+      }
+      if (documentType !== "RUC") {
+        alert("Para factura, el tipo de documento debe ser RUC.");
+        return;
+      }
     }
-    if (billingOption === 'factura') {
-        if (!billingAddress || !documentNumber || !razonSocial) {
-            alert("Por favor, completa todos los campos de facturación para la factura.");
-            return;
-        }
-        if (documentType !== 'RUC') {
-            alert("Para factura, el tipo de documento debe ser RUC.");
-            return;
-        }
-    }
-    if (billingOption === 'boleta') {
-        if (!documentType || !documentNumber) {
-            alert("Por favor, selecciona el tipo y número de documento para la boleta.");
-            return;
-        }
+    if (billingOption === "boleta") {
+      if (!documentType || !documentNumber) {
+        alert(
+          "Por favor, selecciona el tipo y número de documento para la boleta."
+        );
+        return;
+      }
     }
 
     if (!userInfo || userInfo.id === undefined || userInfo.id === null) {
-        alert("Error: No se pudo obtener la información del usuario. Por favor, inicia sesión.");
-        return;
+      alert(
+        "Error: No se pudo obtener la información del usuario. Por favor, inicia sesión."
+      );
+      return;
     }
 
     // Construir el objeto completo para enviar como JSON
     const orderDataToSend = {
-        usuario_id: userInfo.id,
-        total_productos: totalProductos,
-        descuentos: descuentos,
-        subtotal: subtotal,
-        costo_envio: costoEnvio,
-        total_a_pagar: totalAPagar,
-        opcion_entrega: deliveryOption,
-        ubicacion_seleccionada: selectedLocationText,
-        metodo_pago: paymentMethod,
-        tipo_comprobante: billingOption,
-        pedido_items: pedidoItems, // pedidoItems ya es un array de objetos
-        
-        // Campos opcionales para facturación:
-        // Se envían como null si están vacíos para coincidir con Optional[str] en FastAPI
-        documentType: documentType === '' ? null : documentType,
-        documentNumber: documentNumber === '' ? null : documentNumber,
-        billingAddress: billingAddress === '' ? null : billingAddress,
-        razonSocial: razonSocial === '' ? null : razonSocial,
+      usuario_id: userInfo.id,
+      total_productos: totalProductos,
+      descuentos: descuentos,
+      subtotal: subtotal,
+      costo_envio: costoEnvio,
+      total_a_pagar: totalAPagar,
+      opcion_entrega: deliveryOption,
+      ubicacion_seleccionada: selectedLocationText,
+      metodo_pago: paymentMethod,
+      tipo_comprobante: billingOption,
+      pedido_items: pedidoItems, // pedidoItems ya es un array de objetos
+
+      // Campos opcionales para facturación:
+      // Se envían como null si están vacíos para coincidir con Optional[str] en FastAPI
+      documentType: documentType === "" ? null : documentType,
+      documentNumber: documentNumber === "" ? null : documentNumber,
+      billingAddress: billingAddress === "" ? null : billingAddress,
+      razonSocial: razonSocial === "" ? null : razonSocial,
     };
 
     console.log("Datos del pedido a enviar (JSON Body):", orderDataToSend);
 
     try {
-        // Llama a la función del servicio para crear el pedido
-        const result = await createOrder(orderDataToSend);
+      // Llama a la función del servicio para crear el pedido
+      const result = await createOrder(orderDataToSend);
 
-        console.log('Pedido procesado con éxito:', result);
+      console.log("Pedido procesado con éxito:", result);
 
-        // En lugar de mostrar el modal, ahora se muestra una alerta simple de confirmación
-        alert(`¡Pedido creado con éxito! ID del pedido: ${result.pedido_id}`);
+      // En lugar de mostrar el modal, ahora se muestra una alerta simple de confirmación
+      alert(`¡Pedido creado con éxito! ID del pedido: ${result.pedido_id}`);
 
-        // Opcional: Redirigir al usuario o limpiar el carrito después de un pedido exitoso
-        // history.push('/confirmacion', { orderId: result.pedido_id });
-
-    } catch (error: any) { 
-        console.error('Error al pagar:', error);
-        alert(`Error al procesar el pago: ${error.message}`); 
+      // Opcional: Redirigir al usuario o limpiar el carrito después de un pedido exitoso
+      // history.push('/confirmacion', { orderId: result.pedido_id });
+    } catch (error: any) {
+      console.error("Error al pagar:", error);
+      alert(`Error al procesar el pago: ${error.message}`);
     }
   };
-
 
   return (
     <div className="pedido-page">
@@ -335,33 +363,68 @@ const PedidoPage: React.FC = () => {
                   <ListGroup variant="flush">
                     <ListGroup.Item
                       action
-                      onClick={() => setPaymentMethod('card')}
-                      className={`d-flex align-items-center px-3 py-2 ${paymentMethod === 'card' ? 'border border-primary' : ''}`}
-                      style={{ borderColor: paymentMethod === 'card' ? '#800080' : '' }}
+                      onClick={() => setPaymentMethod("card")}
+                      className={`d-flex align-items-center px-3 py-2 ${
+                        paymentMethod === "card" ? "border border-primary" : ""
+                      }`}
+                      style={{
+                        borderColor: paymentMethod === "card" ? "#800080" : "",
+                      }}
                     >
-                      <Image src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Visa_Inc._logo.svg/2560px-Visa_Inc._logo.svg.png" alt="Visa" style={{ height: '1.5em', marginRight: '5px' }} />
-                      <Image src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b7/MasterCard_Logo.svg/2560px-MasterCard_Logo.svg.png" alt="MasterCard" style={{ height: '1.5em', marginRight: '5px' }} />
-                      <Image src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/American_Express_logo.svg/2560px-American_Express_logo.svg.png" alt="Amex" style={{ height: '1.5em', marginRight: '5px' }} />
+                      <Image
+                        src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Visa_Inc._logo.svg/2560px-Visa_Inc._logo.svg.png"
+                        alt="Visa"
+                        style={{ height: "1.5em", marginRight: "5px" }}
+                      />
+                      <Image
+                        src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b7/MasterCard_Logo.svg/2560px-MasterCard_Logo.svg.png"
+                        alt="MasterCard"
+                        style={{ height: "1.5em", marginRight: "5px" }}
+                      />
+                      <Image
+                        src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/American_Express_logo.svg/2560px-American_Express_logo.svg.png"
+                        alt="Amex"
+                        style={{ height: "1.5em", marginRight: "5px" }}
+                      />
                       Tarjeta de Crédito o Débito
                     </ListGroup.Item>
                     <ListGroup.Item
                       action
-                      onClick={() => setPaymentMethod('mobile')}
-                      className={`d-flex align-items-center px-3 py-2 ${paymentMethod === 'mobile' ? 'border border-primary' : ''}`}
-                      style={{ borderColor: paymentMethod === 'mobile' ? '#800080' : '' }}
+                      onClick={() => setPaymentMethod("mobile")}
+                      className={`d-flex align-items-center px-3 py-2 ${
+                        paymentMethod === "mobile"
+                          ? "border border-primary"
+                          : ""
+                      }`}
+                      style={{
+                        borderColor:
+                          paymentMethod === "mobile" ? "#800080" : "",
+                      }}
                     >
                       {/* Image of Mercado Pago */}
-                      <Image src="https://www.mercadopago.com/tools/app/logo/logo-square.svg" alt="Mercado Pago" style={{ height: '1.5em', marginRight: '5px' }} />
+                      <Image
+                        src="https://www.mercadopago.com/tools/app/logo/logo-square.svg"
+                        alt="Mercado Pago"
+                        style={{ height: "1.5em", marginRight: "5px" }}
+                      />
                       Banca móvil, QR (Yape, Plin) y Agentes
                     </ListGroup.Item>
                     <ListGroup.Item
                       action
-                      onClick={() => setPaymentMethod('yape')}
-                      className={`d-flex align-items-center px-3 py-2 ${paymentMethod === 'yape' ? 'border border-primary' : ''}`}
-                      style={{ borderColor: paymentMethod === 'yape' ? '#800080' : '' }}
+                      onClick={() => setPaymentMethod("yape")}
+                      className={`d-flex align-items-center px-3 py-2 ${
+                        paymentMethod === "yape" ? "border border-primary" : ""
+                      }`}
+                      style={{
+                        borderColor: paymentMethod === "yape" ? "#800080" : "",
+                      }}
                     >
                       {/* Image of Yape */}
-                      <Image src="https://play-lh.googleusercontent.com/y3yL4pI3T9F3-F52t5B19d08uC5Jj5N1q1k1_2h3L5oF5L3o3a6L4x4f2F3s4G3g4g=s128" alt="Yape" style={{ height: '1.5em', marginRight: '5px' }} />
+                      <Image
+                        src="https://play-lh.googleusercontent.com/y3yL4pI3T9F3-F52t5B19d08uC5Jj5N1q1k1_2h3L5oF5L3o3a6L4x4f2F3s4G3g4g=s128"
+                        alt="Yape"
+                        style={{ height: "1.5em", marginRight: "5px" }}
+                      />
                       Yape y otras billeteras
                     </ListGroup.Item>
                   </ListGroup>
@@ -374,29 +437,41 @@ const PedidoPage: React.FC = () => {
               <Card.Body>
                 <div className="d-flex justify-content-between align-items-center mb-3">
                   <h4 className="mb-0">Datos de facturación</h4>
-                  <span className="badge bg-danger rounded-pill px-3 py-2">Requerido</span>
+                  <span className="badge bg-danger rounded-pill px-3 py-2">
+                    Requerido
+                  </span>
                 </div>
 
                 <div className="d-flex mb-3">
                   <Button
-                    className={`w-50 me-2 rounded-pill py-2 ${billingOption === 'boleta' ? 'btn-tambo-active' : 'btn-tambo-outline'}`}
-                    onClick={() => setBillingOption('boleta')}
+                    className={`w-50 me-2 rounded-pill py-2 ${
+                      billingOption === "boleta"
+                        ? "btn-tambo-active"
+                        : "btn-tambo-outline"
+                    }`}
+                    onClick={() => setBillingOption("boleta")}
                   >
                     Pago con boleta
                   </Button>
                   <Button
-                    className={`w-50 rounded-pill py-2 ${billingOption === 'factura' ? 'btn-tambo-active' : 'btn-tambo-outline'}`}
-                    onClick={() => setBillingOption('factura')}
+                    className={`w-50 rounded-pill py-2 ${
+                      billingOption === "factura"
+                        ? "btn-tambo-active"
+                        : "btn-tambo-outline"
+                    }`}
+                    onClick={() => setBillingOption("factura")}
                   >
                     Pago con factura
                   </Button>
                 </div>
 
                 {/* Campos condicionales para Factura */}
-                {billingOption === 'factura' && (
+                {billingOption === "factura" && (
                   <>
                     <Form.Group className="mb-3">
-                      <Form.Label className="small text-muted">Dirección</Form.Label>
+                      <Form.Label className="small text-muted">
+                        Dirección
+                      </Form.Label>
                       <Form.Control
                         type="text"
                         placeholder="Dirección de facturación"
@@ -406,7 +481,9 @@ const PedidoPage: React.FC = () => {
                       />
                     </Form.Group>
                     <Form.Group className="mb-3">
-                      <Form.Label className="small text-muted">Tipo de documento de identidad</Form.Label>
+                      <Form.Label className="small text-muted">
+                        Tipo de documento de identidad
+                      </Form.Label>
                       <Form.Select
                         className="rounded-pill"
                         value={documentType}
@@ -417,7 +494,9 @@ const PedidoPage: React.FC = () => {
                       </Form.Select>
                     </Form.Group>
                     <Form.Group className="mb-3">
-                      <Form.Label className="small text-muted">Número de documento de identidad</Form.Label>
+                      <Form.Label className="small text-muted">
+                        Número de documento de identidad
+                      </Form.Label>
                       <Form.Control
                         type="text"
                         placeholder="Número de RUC"
@@ -427,7 +506,9 @@ const PedidoPage: React.FC = () => {
                       />
                     </Form.Group>
                     <Form.Group className="mb-3">
-                      <Form.Label className="small text-muted">Nombre o Razón Social</Form.Label>
+                      <Form.Label className="small text-muted">
+                        Nombre o Razón Social
+                      </Form.Label>
                       <Form.Control
                         type="text"
                         placeholder="Nombre o Razón Social"
@@ -440,10 +521,12 @@ const PedidoPage: React.FC = () => {
                 )}
 
                 {/* Campos para Boleta (se muestran si no es factura o si es boleta) */}
-                {billingOption === 'boleta' && (
+                {billingOption === "boleta" && (
                   <>
                     <Form.Group className="mb-3">
-                      <Form.Label className="small text-muted">Tipo de documento de identidad</Form.Label>
+                      <Form.Label className="small text-muted">
+                        Tipo de documento de identidad
+                      </Form.Label>
                       <Form.Select
                         className="rounded-pill"
                         value={documentType}
@@ -457,7 +540,9 @@ const PedidoPage: React.FC = () => {
                     </Form.Group>
 
                     <Form.Group className="mb-3">
-                      <Form.Label className="small text-muted">Número de documento de identidad</Form.Label>
+                      <Form.Label className="small text-muted">
+                        Número de documento de identidad
+                      </Form.Label>
                       <Form.Control
                         type="text"
                         placeholder="Número de documento"
@@ -476,10 +561,10 @@ const PedidoPage: React.FC = () => {
               variant="dark"
               size="lg"
               className="w-100 rounded-pill py-3 mb-4"
-              style={{ backgroundColor: '#800080', borderColor: '#800080' }}
+              style={{ backgroundColor: "#800080", borderColor: "#800080" }}
               onClick={handlePagarAhora} // Asigna la función al botón
             >
-                Pagar ahora
+              Pagar ahora
             </Button>
           </Col>
 

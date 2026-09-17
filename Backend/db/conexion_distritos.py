@@ -1,10 +1,14 @@
+import os
 import pyodbc
 
 def get_connection():
+    server = os.getenv("DB_SERVER", "Wender")
+    database = os.getenv("DB_NAME_DISTRITOS", "geoDistritosLima")
+    driver = os.getenv("DB_DRIVER", "ODBC Driver 18 for SQL Server")
     conn_str = (
-        "DRIVER={ODBC Driver 18 for SQL Server};"
-        "SERVER=Wender;"
-        "DATABASE=geoDistritosLima;"
+        f"DRIVER={{{driver}}};"
+        f"SERVER={server};"
+        f"DATABASE={database};"
         "Trusted_Connection=yes;"
         "TrustServerCertificate=yes;"
     )

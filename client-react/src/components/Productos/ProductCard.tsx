@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import type { Producto } from "../../types";
-import { agregarAlCarrito } from "../Header/agregarAlCarrito";
-import ModalProducto from "./ModalProducto";
+import { agregarAlCarrito } from "../Header/Navegacion/Iconos/Lupa/agregarAlCarrito";
+import  ModalProducto from "./ModalProducto";
 
 const ProductCard: React.FC<{ producto: Producto }> = ({ producto }) => {
   const [mostrarModal, setMostrarModal] = useState(false);
@@ -46,7 +46,7 @@ const ProductCard: React.FC<{ producto: Producto }> = ({ producto }) => {
         </span>
         <div className="relative">
           <img
-            src={`http://localhost:5000/static/productos/${producto.imagen_url}`}
+            src={`http://127.0.0.1:8000/static/productos/${producto.imagen_url}`}
             alt={producto.nombre}
             style={{
               width: "100%", // ocupa todo el ancho disponible

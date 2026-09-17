@@ -11,13 +11,12 @@ interface ModalProductoProps {
 }
 
 const ModalProducto: React.FC<ModalProductoProps> = ({
-  
   producto,
   cantidad,
   setCantidad,
   mostrar,
   onClose,
-  onAgregar
+  onAgregar,
 }) => {
   const precioTotal = (producto.precio_descuento * cantidad).toFixed(2);
 
@@ -28,11 +27,14 @@ const ModalProducto: React.FC<ModalProductoProps> = ({
       className="modal d-block"
       tabIndex={-1}
       role="dialog"
-      style={{ backgroundColor: "rgba(0, 0, 0, 0.5)",zIndex: 1060 }}
+      style={{ backgroundColor: "rgba(0, 0, 0, 0.5)", zIndex: 1060 }}
       onClick={onClose}
-      
     >
-      <div className="modal-dialog" role="document" onClick={(e) => e.stopPropagation()}>
+      <div
+        className="modal-dialog"
+        role="document"
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className="modal-content">
           <div className="modal-header">
             <h5 className="modal-title">{producto.nombre}</h5>
@@ -54,7 +56,9 @@ const ModalProducto: React.FC<ModalProductoProps> = ({
               className="form-control my-2"
               style={{ width: "100px", margin: "0 auto" }}
             />
-            <p>Total: <strong>S/ {precioTotal}</strong></p>
+            <p>
+              Total: <strong>S/ {precioTotal}</strong>
+            </p>
           </div>
           <div className="modal-footer">
             <button onClick={onAgregar} className="btn btn-primary">

@@ -1,19 +1,19 @@
 // import React from "react";
-import TopBar from "./components/TopBar";
-import Header from "./components/Header/Header";
+import Cabecera from "./components/Header/Cabecera";
+import Header from "./components/Header/Navegacion/Header";
 import MainBanner from "./components/MainBanner";
 import ProductPage from "./components/Productos/ProductPage";
 
 function App() {
   const misImagenesParaBanner = [
-    "http://localhost:5000/static/logos/carrusel1-x-1920.webp",
-    "http://localhost:5000/static/logos/carrusel2-x-1920.webp",
-    "http://localhost:5000/static/logos/carrusel3-x-1920.webp",
+    "http://127.0.0.1:8000/static/logos/carrusel1-x-1920.webp",
+    "http://127.0.0.1:8000/static/logos/carrusel2-x-1920.webp",
+    "http://127.0.0.1:8000/static/logos/carrusel3-x-1920.webp",
   ];
 
   return (
     <>
-      <TopBar />
+      <Cabecera />
       <Header />
       <MainBanner images={misImagenesParaBanner} />
       <ProductPage cat={1} />
